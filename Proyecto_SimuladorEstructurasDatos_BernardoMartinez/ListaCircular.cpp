@@ -78,6 +78,10 @@ bool ListaCircular::agregarNodoPosicion(int _valor, int _pocision) {
 	else if (_pocision > obtenerTamanio() || _pocision < 0) {
 		return false;
 	}
+	else if (_pocision == 0) {
+		agregarNodoInicio(_valor);
+		return true;
+	}
 	else {
 		NodoCircular* actual = primero;
 		int posTmp = 0;
@@ -105,14 +109,22 @@ bool ListaCircular::eliminarNodoValor(int _valor) {
 		if (actual->getValor() == _valor) {
 			if (actual == primero) {
 				primero = actual->getSiguiente();
+				primero->setAnterior(ultimo);
 				delete actual;
+				return true;
+			}
+			else if (actual == ultimo) {
+				ultimo = actual->getAnterior();
+				ultimo->setSiguiente(primero);
+				delete actual;
+				return true;
 			}
 			else {
 				actual->getAnterior()->setSiguiente(actual->getSiguiente());
 				actual->getSiguiente()->setAnterior(actual->getAnterior());
 				delete actual;
+				return true;
 			}
-			return true;
 		}
 
 		actual = actual->getSiguiente();
@@ -140,6 +152,12 @@ bool ListaCircular::eliminarNodoPosicion(int _posicion) {
 
 	if (actual == primero) {
 		primero = actual->getSiguiente();
+		primero->setAnterior(ultimo);
+		delete actual;
+		return true;
+	}else if (actual == ultimo) {
+		ultimo = actual->getAnterior();
+		ultimo->setSiguiente(primero);
 		delete actual;
 		return true;
 	}

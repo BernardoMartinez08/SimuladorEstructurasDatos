@@ -2,7 +2,9 @@
 #include "ListaSimple.h"
 #include "ListaDoble.h"
 #include "ListaCircular.h"
+#include "Vector.h"
 #include <iostream>
+#include <vector>
 using namespace std;
 namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 	using namespace System;
@@ -18,9 +20,16 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 	/// </summary>
 	public ref class PanelAcciones : public System::Windows::Forms::Form
 	{
-		ListaSimple *lsSimple = new ListaSimple();
-		ListaDoble *lsDoble = new ListaDoble();;
+		Vector* lsVector = new Vector();
+		ListaSimple* lsSimple = new ListaSimple();
+		ListaDoble* lsDoble = new ListaDoble();;
 		ListaCircular* lsCircular = new ListaCircular();
+
+	private: System::Windows::Forms::Label^ lbBusqueda;
+	private: System::Windows::Forms::Label^ txtTotalE;
+	private: System::Windows::Forms::Label^ lbInfoBusqueda;
+	private: System::Windows::Forms::Label^ lbErrorOperacion;
+
 	public:
 		PanelAcciones(void)
 		{
@@ -51,9 +60,10 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 	private: System::Windows::Forms::Label^ label3;
 	private: System::Windows::Forms::ComboBox^ cbEstructuras;
 	private: System::Windows::Forms::Label^ label2;
-	private: System::Windows::Forms::TextBox^ txtTotalE;
 
-	private: System::Windows::Forms::Label^ label6;
+	private: System::Windows::Forms::Label^ lbTotalElem;
+
+
 	private: System::Windows::Forms::Button^ btUpdate;
 
 	private: System::Windows::Forms::TextBox^ txtPosicion;
@@ -93,8 +103,7 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 			this->lbValorWarning = (gcnew System::Windows::Forms::Label());
 			this->lbOperacionWarning = (gcnew System::Windows::Forms::Label());
 			this->lbEstructuraWarning = (gcnew System::Windows::Forms::Label());
-			this->txtTotalE = (gcnew System::Windows::Forms::TextBox());
-			this->label6 = (gcnew System::Windows::Forms::Label());
+			this->lbTotalElem = (gcnew System::Windows::Forms::Label());
 			this->btUpdate = (gcnew System::Windows::Forms::Button());
 			this->txtPosicion = (gcnew System::Windows::Forms::TextBox());
 			this->lbPosicion = (gcnew System::Windows::Forms::Label());
@@ -105,6 +114,10 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 			this->cbEstructuras = (gcnew System::Windows::Forms::ComboBox());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->panelNodos = (gcnew System::Windows::Forms::Panel());
+			this->lbBusqueda = (gcnew System::Windows::Forms::Label());
+			this->lbInfoBusqueda = (gcnew System::Windows::Forms::Label());
+			this->txtTotalE = (gcnew System::Windows::Forms::Label());
+			this->lbErrorOperacion = (gcnew System::Windows::Forms::Label());
 			this->gbOpciones->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -122,13 +135,13 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 			// 
 			// gbOpciones
 			// 
+			this->gbOpciones->Controls->Add(this->txtTotalE);
 			this->gbOpciones->Controls->Add(this->lbActualizarWarning);
 			this->gbOpciones->Controls->Add(this->lbPosicionWarning);
 			this->gbOpciones->Controls->Add(this->lbValorWarning);
 			this->gbOpciones->Controls->Add(this->lbOperacionWarning);
 			this->gbOpciones->Controls->Add(this->lbEstructuraWarning);
-			this->gbOpciones->Controls->Add(this->txtTotalE);
-			this->gbOpciones->Controls->Add(this->label6);
+			this->gbOpciones->Controls->Add(this->lbTotalElem);
 			this->gbOpciones->Controls->Add(this->btUpdate);
 			this->gbOpciones->Controls->Add(this->txtPosicion);
 			this->gbOpciones->Controls->Add(this->lbPosicion);
@@ -210,26 +223,15 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 			this->lbEstructuraWarning->TabIndex = 11;
 			this->lbEstructuraWarning->Text = L"Recuerda Seleccionar la Estructura.";
 			// 
-			// txtTotalE
+			// lbTotalElem
 			// 
-			this->txtTotalE->BackColor = System::Drawing::SystemColors::InactiveCaption;
-			this->txtTotalE->Enabled = false;
-			this->txtTotalE->ForeColor = System::Drawing::Color::Maroon;
-			this->txtTotalE->Location = System::Drawing::Point(159, 399);
-			this->txtTotalE->Name = L"txtTotalE";
-			this->txtTotalE->Size = System::Drawing::Size(69, 22);
-			this->txtTotalE->TabIndex = 10;
-			this->txtTotalE->Visible = false;
-			// 
-			// label6
-			// 
-			this->label6->AutoSize = true;
-			this->label6->Location = System::Drawing::Point(6, 402);
-			this->label6->Name = L"label6";
-			this->label6->Size = System::Drawing::Size(147, 16);
-			this->label6->TabIndex = 9;
-			this->label6->Text = L"Total de Elementos:";
-			this->label6->Visible = false;
+			this->lbTotalElem->AutoSize = true;
+			this->lbTotalElem->Location = System::Drawing::Point(6, 402);
+			this->lbTotalElem->Name = L"lbTotalElem";
+			this->lbTotalElem->Size = System::Drawing::Size(147, 16);
+			this->lbTotalElem->TabIndex = 9;
+			this->lbTotalElem->Text = L"Total de Elementos:";
+			this->lbTotalElem->Visible = false;
 			// 
 			// btUpdate
 			// 
@@ -340,8 +342,60 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 			this->panelNodos->AutoScroll = true;
 			this->panelNodos->Location = System::Drawing::Point(328, 128);
 			this->panelNodos->Name = L"panelNodos";
-			this->panelNodos->Size = System::Drawing::Size(657, 377);
+			this->panelNodos->Size = System::Drawing::Size(657, 358);
 			this->panelNodos->TabIndex = 4;
+			// 
+			// lbBusqueda
+			// 
+			this->lbBusqueda->AutoSize = true;
+			this->lbBusqueda->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->lbBusqueda->Location = System::Drawing::Point(325, 83);
+			this->lbBusqueda->Name = L"lbBusqueda";
+			this->lbBusqueda->Size = System::Drawing::Size(168, 15);
+			this->lbBusqueda->TabIndex = 11;
+			this->lbBusqueda->Text = L"Resultado de Busqueda: ";
+			this->lbBusqueda->Visible = false;
+			// 
+			// lbInfoBusqueda
+			// 
+			this->lbInfoBusqueda->AutoSize = true;
+			this->lbInfoBusqueda->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->lbInfoBusqueda->ForeColor = System::Drawing::SystemColors::MenuHighlight;
+			this->lbInfoBusqueda->Location = System::Drawing::Point(488, 83);
+			this->lbInfoBusqueda->Name = L"lbInfoBusqueda";
+			this->lbInfoBusqueda->Size = System::Drawing::Size(29, 15);
+			this->lbInfoBusqueda->TabIndex = 12;
+			this->lbInfoBusqueda->Text = L"N/A";
+			this->lbInfoBusqueda->Visible = false;
+			// 
+			// txtTotalE
+			// 
+			this->txtTotalE->AutoSize = true;
+			this->txtTotalE->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->txtTotalE->ForeColor = System::Drawing::Color::Maroon;
+			this->txtTotalE->Location = System::Drawing::Point(146, 401);
+			this->txtTotalE->Name = L"txtTotalE";
+			this->txtTotalE->Size = System::Drawing::Size(38, 20);
+			this->txtTotalE->TabIndex = 13;
+			this->txtTotalE->Text = L"N/A";
+			this->txtTotalE->Visible = false;
+			// 
+			// lbErrorOperacion
+			// 
+			this->lbErrorOperacion->AutoSize = true;
+			this->lbErrorOperacion->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->lbErrorOperacion->ForeColor = System::Drawing::Color::DarkRed;
+			this->lbErrorOperacion->Location = System::Drawing::Point(325, 489);
+			this->lbErrorOperacion->Name = L"lbErrorOperacion";
+			this->lbErrorOperacion->Size = System::Drawing::Size(46, 16);
+			this->lbErrorOperacion->TabIndex = 15;
+			this->lbErrorOperacion->Text = L"Error.";
+			this->lbErrorOperacion->Visible = false;
+			this->lbErrorOperacion->Click += gcnew System::EventHandler(this, &PanelAcciones::lbErrorOperacion_Click);
 			// 
 			// PanelAcciones
 			// 
@@ -350,7 +404,10 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 			this->AutoScroll = true;
 			this->BackColor = System::Drawing::Color::LightBlue;
 			this->ClientSize = System::Drawing::Size(994, 517);
+			this->Controls->Add(this->lbErrorOperacion);
+			this->Controls->Add(this->lbInfoBusqueda);
 			this->Controls->Add(this->panelNodos);
+			this->Controls->Add(this->lbBusqueda);
 			this->Controls->Add(this->gbOpciones);
 			this->Controls->Add(this->label1);
 			this->Name = L"PanelAcciones";
@@ -373,136 +430,325 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 			cbOperaciones->Enabled = false;
 			lbEstructuraWarning->Visible = true;
 		}
+
+		lbTotalElem->Visible = true;
+		txtTotalE->Visible = true;
+		txtTotalE->Text = "0";
 	}
 		   int num = 0;
 		   int distancia = 0;
 		 
 	private: System::Void btUpdate_Click(System::Object^ sender, System::EventArgs^ e) {
+		lbErrorOperacion->Visible = false;
 		if (cbEstructuras->SelectedItem->ToString() == "VECTOR") {
+			if (cbOperaciones->SelectedItem->ToString() == "Insertar al Inicio") {
+				if (txtValor->Text != "") {
+					if (lsVector->insertarIncio(Convert::ToInt32(txtValor->Text))) {
+						imprimirVector();
+					}
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Insertar al Final") {
+				if (txtValor->Text != "") {
+					if (lsVector->insertarFinal(Convert::ToInt32(txtValor->Text))) {
+						imprimirVector();
+					}
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Insertar en Posicion") {
+				if (txtValor->Text != "" && txtPosicion->Text != "") {
+					if (lsVector->insertarPosicion(Convert::ToInt32(txtValor->Text), Convert::ToInt32(txtPosicion->Text))) {
+						imprimirVector();
+					}
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR POSICION NO VALIDA!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Eliminar por Valor") {
+				if (txtValor->Text != "") {
+					if (lsVector->eliminarValor(Convert::ToInt32(txtValor->Text))) {
+						imprimirVector();
+					}
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR VALOR NO EXISTE EN LA LISTA!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Eliminar por Posicion") {
+				if (txtPosicion->Text != "") {
+					if (lsVector->eliminarPosicion(Convert::ToInt32(txtPosicion->Text))) {
+						imprimirVector();
+					}
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR POSICION NO VALIDA!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Buscar un Valor") {
+				if (txtValor->Text != "") {
+					lbBusqueda->Visible = true;
+					lbInfoBusqueda->Visible = true;
+					
+					if (lsVector->buscarValor(Convert::ToInt32(txtValor->Text)) != false) {
+						lbInfoBusqueda->Text = "SE ENCONTRO EL DATO.";
+					}
+					else {
+						lbInfoBusqueda->Text = "NO ENCONTRAMOS LO QUE BUSCAS.";
+					}
+				}
+			}
+		}
+		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA SIMPLE") {
+			if (cbOperaciones->SelectedItem->ToString() == "Insertar al Inicio") {
+				if (txtValor->Text != "") {
+					if (lsSimple->agregarNodoInicio(Convert::ToInt32(txtValor->Text)))
+						imprimirListaSimple();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR VALOR YA EXISTE EN LA LISTA!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Insertar al Final") {
+				if (txtValor->Text != "") {
+					if (lsSimple->agregarNodoFinal(Convert::ToInt32(txtValor->Text)))
+						imprimirListaSimple();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR VALOR YA EXISTE EN LA LISTA!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Insertar en Posicion") {
+				if (txtValor->Text != "" && txtPosicion->Text != "") {
+					if (lsSimple->agregarNodoPosicion(Convert::ToInt32(txtValor->Text), Convert::ToInt32(txtPosicion->Text)))
+						imprimirListaSimple();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR VALOR YA EXISTE EN LA LISTA O POSICION NO VALIDA!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Eliminar por Valor") {
+				if (txtValor->Text != "") {
+					if (lsSimple->eliminarNodoValor(Convert::ToInt32(txtValor->Text)))
+						imprimirListaSimple();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR VALOR NO EXISTE EN LA LISTA!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Eliminar por Posicion") {
+				if (txtPosicion->Text != "") {
+					if (lsSimple->eliminarNodoPosicion(Convert::ToInt32(txtPosicion->Text)))
+						imprimirListaSimple();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR POSICION NO VALIDA!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Buscar un Valor") {
+				if (txtValor->Text != "") {
+					lbBusqueda->Visible = true;
+					lbInfoBusqueda->Visible = true;
 
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA SIMPLE" && cbOperaciones->SelectedItem->ToString() == "Insertar al Inicio") {
-			if (txtValor->ToString() != " ") {
-				if(lsSimple->agregarNodoInicio(Convert::ToInt32(txtValor->Text)))
-					imprimirListaSimple();
+					if (lsSimple->buscarNodo(Convert::ToInt32(txtValor->Text)) != nullptr) {
+						lbInfoBusqueda->Text = "SE ENCONTRO EL DATO.";
+					}
+					else {
+						lbInfoBusqueda->Text = "NO ENCONTRAMOS LO QUE BUSCAS.";
+					}
+				}
 			}
 		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA SIMPLE" && cbOperaciones->SelectedItem->ToString() == "Insertar al Final") {
-			if (txtValor->ToString() != " ") {
-				if(lsSimple->agregarNodoFinal(Convert::ToInt32(txtValor->Text)))
-					imprimirListaSimple();
+		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA DOBLE") {
+			if (cbOperaciones->SelectedItem->ToString() == "Insertar al Inicio") {
+				if (txtValor->Text != "") {
+					if (lsDoble->agregarNodoInicio(Convert::ToInt32(txtValor->Text)))
+						imprimirListaDoble();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR VALOR YA EXISTE EN LA LISTA!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Insertar al Final") {
+				if (txtValor->Text != "") {
+					if (lsDoble->agregarNodoFinal(Convert::ToInt32(txtValor->Text)))
+						imprimirListaDoble();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR VALOR YA EXISTE EN LA LISTA!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Insertar en Posicion") {
+				if (txtValor->Text != "" && txtPosicion->Text != "") {
+					if (lsDoble->agregarNodoPosicion(Convert::ToInt32(txtValor->Text), Convert::ToInt32(txtPosicion->Text)))
+						imprimirListaDoble();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR VALOR YA EXISTE EN LA LISTA O POSICION NO VALIDA!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Eliminar por Valor") {
+				if (txtValor->Text != "") {
+					if (lsDoble->eliminarNodoValor(Convert::ToInt32(txtValor->Text)))
+						imprimirListaDoble();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR VALOR NO EXISTE EN LA LISTA!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Eliminar por Posicion") {
+				if (txtPosicion->Text != "") {
+					if (lsDoble->eliminarNodoPosicion(Convert::ToInt32(txtPosicion->Text)))
+						imprimirListaDoble();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR POSICION NO VALIDA!!";
+					}
+				}
+			}
+			else if (cbOperaciones->SelectedItem->ToString() == "Buscar un Valor") {
+				if (txtValor->Text != "") {
+					lbBusqueda->Visible = true;
+					lbInfoBusqueda->Visible = true;
+
+					if (lsDoble->buscarNodo(Convert::ToInt32(txtValor->Text)) != nullptr) {
+						lbInfoBusqueda->Text = "SE ENCONTRO EL DATO.";
+					}
+					else {
+						lbInfoBusqueda->Text = "NO ENCONTRAMOS LO QUE BUSCAS.";
+					}
+				}
 			}
 		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA SIMPLE" && cbOperaciones->SelectedItem->ToString() == "Insertar en Posicion") {
-			if (txtValor->ToString() != " " && txtPosicion->ToString() != " ") {
-				if(lsSimple->agregarNodoPosicion(Convert::ToInt32(txtValor->Text), Convert::ToInt32(txtPosicion->Text)))
-					imprimirListaSimple();
+		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA DOBLE CIRCULAR") {
+			if (cbOperaciones->SelectedItem->ToString() == "Insertar al Inicio") {
+				if (txtValor->ToString() != " ") {
+					if (lsCircular->agregarNodoInicio(Convert::ToInt32(txtValor->Text)))
+						imprimirListaCircular();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR VALOR YA EXISTE EN LA LISTA!!";
+					}
+				}
 			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA SIMPLE" && cbOperaciones->SelectedItem->ToString() == "Eliminar por Valor") {
-			//cout << "Valor Eliminar " << Convert::ToInt32(txtValor->ToString());
-			if (txtValor->ToString() != " ") {
-				if(lsSimple->eliminarNodoValor(Convert::ToInt32(txtValor->Text)))
-					imprimirListaSimple();
+			else if (cbOperaciones->SelectedItem->ToString() == "Insertar al Final") {
+				if (txtValor->ToString() != " ") {
+					if (lsCircular->agregarNodoFinal(Convert::ToInt32(txtValor->Text)))
+						imprimirListaCircular();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR VALOR YA EXISTE EN LA LISTA!!";
+					}
+				}
 			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA SIMPLE" && cbOperaciones->SelectedItem->ToString() == "Eliminar por Posicion") {
-			if (txtPosicion->ToString() != " ") {
-				if(lsSimple->eliminarNodoPosicion(Convert::ToInt32(txtPosicion->Text)))
-					imprimirListaSimple();
+			else if (cbOperaciones->SelectedItem->ToString() == "Insertar en Posicion") {
+				if (txtValor->ToString() != " " && txtPosicion->ToString() != " ") {
+					if (lsCircular->agregarNodoPosicion(Convert::ToInt32(txtValor->Text), Convert::ToInt32(txtPosicion->Text)))
+						imprimirListaCircular();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR VALOR YA EXISTE EN LA LISTA O POSICION NO VALIDA!!";
+					}
+				}
 			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA SIMPLE" && cbOperaciones->SelectedItem->ToString() == "Insertar al Inicio") {
-			if (txtValor->ToString() != " ") {
-				if(lsSimple->agregarNodoInicio(Convert::ToInt32(txtValor->Text)))
-					imprimirListaSimple();
+			else if (cbOperaciones->SelectedItem->ToString() == "Eliminar por Valor") {
+				if (txtValor->ToString() != " ") {
+					if (lsCircular->eliminarNodoValor(Convert::ToInt32(txtValor->Text)))
+						imprimirListaCircular();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR VALOR NO EXISTE EN LA LISTA!!";
+					}
+				}
 			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA SIMPLE" && cbOperaciones->SelectedItem->ToString() == "Insertar al Final") {
-			if (txtValor->ToString() != " ") {
-				if(lsSimple->agregarNodoFinal(Convert::ToInt32(txtValor->Text)))
-					imprimirListaSimple();
+			else if (cbOperaciones->SelectedItem->ToString() == "Eliminar por Posicion") {
+				if (txtPosicion->ToString() != " ") {
+					if (lsCircular->eliminarNodoPosicion(Convert::ToInt32(txtPosicion->Text)))
+						imprimirListaCircular();
+					else {
+						lbErrorOperacion->Visible = true;
+						lbErrorOperacion->Text = "ERROR POSICION NO VALIDA!!";
+					}
+				}
 			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA SIMPLE" && cbOperaciones->SelectedItem->ToString() == "Insertar en Posicion") {
-			if (txtValor->ToString() != " " && txtPosicion->ToString() != " ") {
-				if(lsSimple->agregarNodoPosicion(Convert::ToInt32(txtValor->Text), Convert::ToInt32(txtPosicion->Text)))
-					imprimirListaSimple();
-			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA SIMPLE" && cbOperaciones->SelectedItem->ToString() == "Eliminar por Valor") {
-			if (txtValor->ToString() != " ") {
-				if(lsSimple->eliminarNodoValor(Convert::ToInt32(txtValor->Text)))
-					imprimirListaSimple();
-			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA SIMPLE" && cbOperaciones->SelectedItem->ToString() == "Eliminar pot Posicion") {
-			if (txtPosicion->ToString() != " ") {
-				if (lsSimple->eliminarNodoPosicion(Convert::ToInt32(txtPosicion->Text)))
-					imprimirListaSimple();
-			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA DOBLE" && cbOperaciones->SelectedItem->ToString() == "Insertar al Inicio") {
-			if (txtValor->ToString() != " ") {
-				if (lsDoble->agregarNodoInicio(Convert::ToInt32(txtValor->Text)))
-					imprimirListaDoble();
-			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA DOBLE" && cbOperaciones->SelectedItem->ToString() == "Insertar al Final") {
-			if (txtValor->ToString() != " ") {
-				if (lsDoble->agregarNodoFinal(Convert::ToInt32(txtValor->Text)))
-					imprimirListaDoble();
-			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA DOBLE" && cbOperaciones->SelectedItem->ToString() == "Insertar en Posicion") {
-			if (txtValor->ToString() != " " && txtPosicion->ToString() != " ") {
-				if (lsDoble->agregarNodoPosicion(Convert::ToInt32(txtValor->Text), Convert::ToInt32(txtPosicion->Text)))
-					imprimirListaDoble();
-			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA DOBLE" && cbOperaciones->SelectedItem->ToString() == "Eliminar por Valor") {
-			if (txtValor->ToString() != " ") {
-				if (lsDoble->eliminarNodoValor(Convert::ToInt32(txtValor->Text)))
-					imprimirListaDoble();
-			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA DOBLE" && cbOperaciones->SelectedItem->ToString() == "Eliminar por Posicion") {
-			if (txtPosicion->ToString() != " ") {
-				if (lsDoble->eliminarNodoPosicion(Convert::ToInt32(txtPosicion->Text)))
-					imprimirListaDoble();
-			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA DOBLE CIRCULAR" && cbOperaciones->SelectedItem->ToString() == "Insertar al Inicio") {
-			if (txtValor->ToString() != " ") {
-				if (lsCircular->agregarNodoInicio(Convert::ToInt32(txtValor->Text)))
-					imprimirListaCircular();
-			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA DOBLE CIRCULAR" && cbOperaciones->SelectedItem->ToString() == "Insertar al Final") {
-			if (txtValor->ToString() != " ") {
-				if (lsCircular->agregarNodoFinal(Convert::ToInt32(txtValor->Text)))
-					imprimirListaCircular();
-			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA DOBLE CIRCULAR" && cbOperaciones->SelectedItem->ToString() == "Insertar en Posicion") {
-			if (txtValor->ToString() != " " && txtPosicion->ToString() != " ") {
-				if (lsCircular->agregarNodoPosicion(Convert::ToInt32(txtValor->Text), Convert::ToInt32(txtPosicion->Text)))
-					imprimirListaCircular();
-			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA DOBLE CIRCULAR" && cbOperaciones->SelectedItem->ToString() == "Eliminar Por Valor") {
-		if (txtValor->ToString() != " ") {
-				if(lsCircular->eliminarNodoValor(Convert::ToInt32(txtValor->Text)))
-					imprimirListaCircular();
-			}
-		}
-		else if (cbEstructuras->SelectedItem->ToString() == "LISTA ENLAZADA DOBLE CIRCULAR" && cbOperaciones->SelectedItem->ToString() == "Eliminar en Posicion") {
-			if (txtPosicion->ToString() != " ") {
-				if (lsCircular->eliminarNodoPosicion(Convert::ToInt32(txtPosicion->Text)))
-					imprimirListaCircular();
+			else if (cbOperaciones->SelectedItem->ToString() == "Buscar un Valor") {
+				if (txtValor->ToString() != " ") {
+					lbBusqueda->Visible = true;
+					lbInfoBusqueda->Visible = true;
+
+					if (lsDoble->buscarNodo(Convert::ToInt32(txtValor->Text)) != nullptr) {
+						lbInfoBusqueda->Text = "SE ENCONTRO EL DATO.";
+					}
+					else {
+						lbInfoBusqueda->Text = "NO ENCONTRAMOS LO QUE BUSCAS.";
+					}
+				}
 			}
 		}
 	}
+
+			private: void imprimirVector() {
+				panelNodos->Controls->Clear();
+				distancia = 0;
+				num = 0;
+
+				if (lsVector->obtenerTamanio() > 0) {
+					for (int i = 0; i < lsVector->obtenerTamanio(); i++) {
+						String^ name = "Nodo" + num;
+						String^ imagen = " ";
+						imagen = "C:/Users/angie/Desktop/ImagenesNodos/Vector/Nodo.png";
+
+
+						System::Windows::Forms::PictureBox^ Nodo = gcnew PictureBox();
+						System::Windows::Forms::Label^ LbNodo = gcnew Label();
+
+						Nodo->Image = Image::FromFile(imagen);
+
+						Nodo->Location = System::Drawing::Point(0 + distancia, 99);
+
+						Nodo->Name = name;
+						Nodo->Size = System::Drawing::Size(90, 50);
+						Nodo->TabIndex = 3;
+						Nodo->TabStop = false;
+						Nodo->Visible = true;
+
+						LbNodo->Parent = Nodo;
+						LbNodo->Location = System::Drawing::Point(1, 10);
+						LbNodo->BackColor = Color().Transparent;
+						LbNodo->ForeColor = Color().MidnightBlue;
+						LbNodo->Size = System::Drawing::Size(90, 50);
+						LbNodo->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 20, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+							static_cast<System::Byte>(0)));
+						LbNodo->Text = lsVector->buscarPosicion(i) + " ";
+						distancia += 90;
+						panelNodos->Controls->Add(Nodo);
+					}
+				}
+
+				lbTotalElem->Visible = true;
+				txtTotalE->Visible = true;
+				txtTotalE->Text = "" + lsVector->obtenerTamanio();
+			}
 
 
 			private: void imprimirListaSimple() {
@@ -537,6 +783,7 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 						NodoSimple->Visible = true;
 						
 						LbNodoSimple->Parent = NodoSimple;
+						LbNodoSimple->Location = System::Drawing::Point(1, 10);
 						LbNodoSimple->BackColor = Color().Transparent;
 						LbNodoSimple->ForeColor = Color().MidnightBlue;
 						LbNodoSimple->Size = System::Drawing::Size(100, 50);
@@ -550,6 +797,10 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 					}
 					lsSimple->imprimirLista();
 				}
+
+				lbTotalElem->Visible = true;
+				txtTotalE->Visible = true;
+				txtTotalE->Text = "" + lsSimple->obtenerTamanio();
 			}
 
 			private: void imprimirListaDoble() {
@@ -587,6 +838,7 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 						NodoDoble->Visible = true;
 
 						LbNodoDoble->Parent = NodoDoble;
+						LbNodoDoble->Location = System::Drawing::Point(31, 15);
 						LbNodoDoble->BackColor = Color().Transparent;
 						LbNodoDoble->ForeColor = Color().MidnightBlue;
 						LbNodoDoble->Size = System::Drawing::Size(100, 50);
@@ -599,6 +851,9 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 						panelNodos->Controls->Add(NodoDoble);
 					}
 				}
+				lbTotalElem->Visible = true;
+				txtTotalE->Visible = true;
+				txtTotalE->Text = "" + lsDoble->obtenerTamanio();
 			}
 
 		   private: void imprimirListaCircular() {
@@ -630,12 +885,14 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 					   NodoCircular->Location = System::Drawing::Point(0 + distancia, 99);
 
 					   NodoCircular->Name = name;
+
 					   NodoCircular->Size = System::Drawing::Size(125, 60);
 					   NodoCircular->TabIndex = 3;
 					   NodoCircular->TabStop = false;
 					   NodoCircular->Visible = true;
 
 					   LbNodoCircular->Parent = NodoCircular;
+					   LbNodoCircular->Location = System::Drawing::Point(31, 15);
 					   LbNodoCircular->BackColor = Color().Transparent;
 					   LbNodoCircular->ForeColor = Color().MidnightBlue;
 					   LbNodoCircular->Size = System::Drawing::Size(100, 50);
@@ -649,36 +906,38 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 					   panelNodos->Controls->Add(NodoCircular);
 				   }
 			   }
+			   lbTotalElem->Visible = true;
+			   txtTotalE->Visible = true;
+			   txtTotalE->Text = "" + lsCircular->obtenerTamanio();
 		   }
 
 	private: System::Void cbOperaciones_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+		lbBusqueda->Visible = false;
+		lbInfoBusqueda->Visible = false;
 		if (cbOperaciones->SelectedItem->ToString() == "Insertar al Inicio" || cbOperaciones->SelectedItem->ToString() == "Insertar al Final" ||
-			cbOperaciones->SelectedItem->ToString() == "Eliminar por Valor" || cbOperaciones->SelectedItem->ToString() == "Buscar un Valor" ||
-			cbOperaciones->SelectedItem->ToString() == "Insertar en Posicion") {
+			cbOperaciones->SelectedItem->ToString() == "Eliminar por Valor" || cbOperaciones->SelectedItem->ToString() == "Buscar un Valor") {
 
 			txtValor->Enabled = true;
 			lbOperacionWarning->Visible = false;
 
-			if (cbOperaciones->SelectedItem->ToString() == "Insertar en Posicion") {
-				txtValor->Enabled = true;
-				txtPosicion->Enabled = true;
-				txtPosicion->Visible = true;
-				lbPosicion->Visible = true;
-				lbPosicionWarning->Visible = true;
-			}
-			else if (cbOperaciones->SelectedItem->ToString() == "Eliminar por Posicion") {
-				txtValor->Enabled = false;
-				txtPosicion->Enabled = true;
-				txtPosicion->Visible = true;
-				lbPosicion->Visible = true;
-				lbPosicionWarning->Visible = true;
-			}
-			else {
-				lbPosicion->Visible = false;
-				txtPosicion->Enabled = false;
-				txtPosicion->Visible = false;
-				lbPosicionWarning->Visible = false;
-			}
+			lbPosicion->Visible = false;
+			txtPosicion->Enabled = false;
+			txtPosicion->Visible = false;
+			lbPosicionWarning->Visible = false;
+		}
+		else if (cbOperaciones->SelectedItem->ToString() == "Insertar en Posicion") {
+			txtValor->Enabled = true;
+			txtPosicion->Enabled = true;
+			txtPosicion->Visible = true;
+			lbPosicion->Visible = true;
+			lbPosicionWarning->Visible = true;
+		}
+		else if (cbOperaciones->SelectedItem->ToString() == "Eliminar por Posicion") {
+			txtValor->Enabled = false;
+			txtPosicion->Enabled = true;
+			txtPosicion->Visible = true;
+			lbPosicion->Visible = true;
+			lbPosicionWarning->Visible = true;
 		}
 		else {
 			txtValor->Enabled = false;
@@ -687,7 +946,7 @@ namespace ProyectoSimuladorEstructurasDatosBernardoMartinez {
 	}
 
 private: System::Void txtPosicion_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-	if (txtPosicion->ToString() != "") {
+	if (txtPosicion->Text != "") {
 		lbPosicionWarning->Visible = false;
 		lbActualizarWarning->Visible = false;
 		btUpdate->Enabled = true;
@@ -699,7 +958,7 @@ private: System::Void txtPosicion_TextChanged(System::Object^ sender, System::Ev
 	}
 }
 private: System::Void txtValor_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-	if (txtValor->ToString() != "") {
+	if (txtValor->Text != "") {
 		lbValorWarning->Visible = false;
 		lbActualizarWarning->Visible = false;
 		btUpdate->Enabled = true;
@@ -709,6 +968,8 @@ private: System::Void txtValor_TextChanged(System::Object^ sender, System::Event
 		lbActualizarWarning->Visible = true;
 		btUpdate->Enabled = false;
 	}
+}
+private: System::Void lbErrorOperacion_Click(System::Object^ sender, System::EventArgs^ e) {
 }
 };
 }

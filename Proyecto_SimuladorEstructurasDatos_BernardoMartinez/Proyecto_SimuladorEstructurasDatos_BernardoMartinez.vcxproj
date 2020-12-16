@@ -127,6 +127,7 @@
     <ClCompile Include="NodoDoble.cpp" />
     <ClCompile Include="NodoSimple.cpp" />
     <ClCompile Include="PanelAcciones.cpp" />
+    <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inicio.h">
@@ -141,6 +142,7 @@
     <ClInclude Include="PanelAcciones.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Inicio.resx">
